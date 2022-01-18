@@ -20,7 +20,7 @@ or do something like this.
 :ColCode
 ```
 search for and highlight color codes in current line.  
-The color code this plugin highlight is `#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f],
+The color code this plugin highlight is `#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]`,  
 e.g. `#7d8fa4`, `#a47996`, `#00af5d`.
 
 ```vim
