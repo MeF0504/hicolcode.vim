@@ -32,8 +32,8 @@ function! s:is_dark(fullcolor) abort
 endfunction
 
 function! hicolcode#hicolcode_enable() abort range
-    if !exists('w:colcode_match_id')
-        let w:colcode_match_id = []
+    if !exists('w:hicolcode_match_id')
+        let w:hicolcode_match_id = {}
     endif
     let colcode_grep = '#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'
     for lnum in range(a:firstline, a:lastline)
@@ -45,35 +45,36 @@ function! hicolcode#hicolcode_enable() abort range
                 break
             endif
             let colcode = line[colcode_idx:colcode_idx+6]
-            if s:is_dark(colcode)
-                let cfg = 255
-                let gfg = 'White'
-            else
-                let cfg = 232
-                let gfg = 'Black'
+            if match(keys(w:hicolcode_match_id), colcode) == -1
+                if s:is_dark(colcode)
+                    let cfg = 255
+                    let gfg = 'White'
+                else
+                    let cfg = 232
+                    let gfg = 'Black'
+                endif
+                execute printf('highlight ColCode%s ctermfg=%s ctermbg=%s guifg=%s guibg=%s',
+                            \ colcode[1:], cfg, s:cvt_fullcolor_256(colcode), gfg, colcode)
+                let match_id = matchadd('ColCode'..colcode[1:], colcode, 15)
+                let w:hicolcode_match_id[colcode] = match_id
             endif
-            execute printf('highlight ColCode%s ctermfg=%s ctermbg=%s guifg=%s guibg=%s',
-                        \ colcode[1:], cfg, s:cvt_fullcolor_256(colcode), gfg, colcode)
-            let match_id = matchadd('ColCode'..colcode[1:], colcode, 15)
-            call add(w:colcode_match_id, match_id)
         endfor
     endfor
 endfunction
 
 function! hicolcode#hicolcode_disable() abort
-    if !exists('w:colcode_match_id')
+    if !exists('w:hicolcode_match_id')
         return
     endif
 
-    for match_id in w:colcode_match_id
+    for match_id in values(w:hicolcode_match_id)
         call matchdelete(match_id)
     endfor
-    let w:colcode_match_id = []
+    let w:hicolcode_match_id = {}
 endfunction
 
 function! hicolcode#hicolcode_auto() abort
     let pos = getpos('.')
-    call hicolcode#hicolcode_disable()
     %call hicolcode#hicolcode_enable()
     call setpos('.', pos)
 endfunction
