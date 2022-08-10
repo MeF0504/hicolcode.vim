@@ -71,3 +71,10 @@ function! hicolcode#hicolcode_disable() abort
     let w:colcode_match_id = []
 endfunction
 
+function! hicolcode#hicolcode_auto() abort
+    let pos = getpos('.')
+    call hicolcode#hicolcode_disable()
+    %call hicolcode#hicolcode_enable()
+    call setpos('.', pos)
+endfunction
+

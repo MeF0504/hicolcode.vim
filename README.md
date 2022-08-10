@@ -8,9 +8,13 @@ Vim plugin that highlight color codes in lines.
 
 ## Installation
 
-If you use dein,
+- [dein](https://github.com/Shougo/dein.vim)
 ```vim
 call dein#add('MeF0504/hicolcode.vim')
+```
+- [vim-plug](https://github.com/junegunn/vim-plug)
+```vim
+Plug 'MeF0504/hicolcode.vim'
 ```
 or do something like this.
 
@@ -37,4 +41,15 @@ or, if you want to highlight all lines in the current file, the following comman
 ```vim
 :%ColCode
 ```
+## Options
+
+- `g:hicolcode_auto_enable` (number)  
+    If set 1, color codes are highlighted automatically.  
+    default: 0
+
+## License
+[MIT](https://github.com/MeF0504/hicolcode.vim/blob/main/LICENSE)
+
+## Author
+[MeF0504](https://github.com/MeF0504)
 
