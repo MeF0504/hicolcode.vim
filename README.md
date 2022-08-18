@@ -28,7 +28,7 @@ The color code this plugin highlight is `#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-
 e.g. `#7d8fa4`, `#a47996`, `#00af5d`.
 
 ```vim
-:ColCodeDisable
+:ColCodeClear
 ```
 clear all highlights set by this plugin.
 

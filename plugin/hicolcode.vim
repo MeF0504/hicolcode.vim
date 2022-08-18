@@ -7,14 +7,10 @@ if exists('g:loaded_hicolcode')
 endif
 let g:loaded_hicolcode = 1
 
-command! -range ColCode <line1>,<line2>call hicolcode#hicolcode_enable()
-command! ColCodeDisable call hicolcode#hicolcode_disable()
+command! -range ColCode <line1>,<line2>call hicolcode#hicolcode()
+command! ColCodeClear call hicolcode#clear()
 
 if get(g:, 'hicolcode_auto_enable', 0)
-    augroup HiColCode
-        autocmd!
-        autocmd VimEnter * ++once call hicolcode#hicolcode_auto()
-        autocmd InsertLeave * call hicolcode#hicolcode_auto()
-    augroup END
+    autocmd VimEnter * ++once call hicolcode#auto_enable()
 endif
 

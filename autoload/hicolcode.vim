@@ -31,7 +31,7 @@ function! s:is_dark(fullcolor) abort
     return (r*w_r+g*w_g+b*w_g)/(w_r+w_g+w_b)<thsd
 endfunction
 
-function! hicolcode#hicolcode_enable() abort range
+function! hicolcode#hicolcode() abort range
     if !exists('w:hicolcode_match_id')
         let w:hicolcode_match_id = {}
     endif
@@ -62,7 +62,14 @@ function! hicolcode#hicolcode_enable() abort range
     endfor
 endfunction
 
-function! hicolcode#hicolcode_disable() abort
+function! hicolcode#disable() abort
+    augroup HiColCode
+        autocmd!
+    augroup END
+    call hicolcode#clear()
+endfunction
+
+function! hicolcode#clear() abort
     if !exists('w:hicolcode_match_id')
         return
     endif
@@ -73,9 +80,17 @@ function! hicolcode#hicolcode_disable() abort
     let w:hicolcode_match_id = {}
 endfunction
 
-function! hicolcode#hicolcode_auto() abort
+function! <SID>hicolcode_auto() abort
     let pos = getpos('.')
-    %call hicolcode#hicolcode_enable()
+    %call hicolcode#hicolcode()
     call setpos('.', pos)
+endfunction
+
+function! hicolcode#auto_enable() abort
+    call <SID>hicolcode_auto()
+    augroup HiColCode
+        autocmd!
+        autocmd InsertLeave * call <SID>hicolcode_auto()
+    augroup END
 endfunction
 
