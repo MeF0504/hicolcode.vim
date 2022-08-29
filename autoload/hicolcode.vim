@@ -35,7 +35,7 @@ function! hicolcode#hicolcode() abort range
     if !exists('w:hicolcode_match_id')
         let w:hicolcode_match_id = {}
     endif
-    let colcode_grep = '#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'
+    let colcode_grep = '#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]'
     for lnum in range(a:firstline, a:lastline)
         let line = getline(lnum)
         let colcode_cnt = count(line, '#')
@@ -44,7 +44,7 @@ function! hicolcode#hicolcode() abort range
             if colcode_idx == -1
                 break
             endif
-            let colcode = line[colcode_idx:colcode_idx+6]
+            let colcode = tolower(line[colcode_idx:colcode_idx+6])
             if match(keys(w:hicolcode_match_id), colcode) == -1
                 if s:is_dark(colcode)
                     let cfg = 255
@@ -55,7 +55,9 @@ function! hicolcode#hicolcode() abort range
                 endif
                 execute printf('highlight ColCode%s ctermfg=%s ctermbg=%s guifg=%s guibg=%s',
                             \ colcode[1:], cfg, s:cvt_fullcolor_256(colcode), gfg, colcode)
-                let match_id = matchadd('ColCode'..colcode[1:], colcode, 15)
+                let pat = join(map(split(colcode, '\zs'),
+                            \ 'v:val==#toupper(v:val)?v:val:"[".v:val.toupper(v:val)."]"'), '')
+                let match_id = matchadd('ColCode'..colcode[1:], pat, 15)
                 let w:hicolcode_match_id[colcode] = match_id
             endif
         endfor
@@ -91,6 +93,7 @@ function! hicolcode#auto_enable() abort
     augroup HiColCode
         autocmd!
         autocmd InsertLeave * call <SID>hicolcode_auto()
+        autocmd BufWinEnter * call <SID>hicolcode_auto()
     augroup END
 endfunction
 
