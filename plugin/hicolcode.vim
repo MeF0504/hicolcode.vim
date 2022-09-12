@@ -11,6 +11,10 @@ command! -range ColCode <line1>,<line2>call hicolcode#hicolcode()
 command! ColCodeClear call hicolcode#clear()
 
 if get(g:, 'hicolcode_auto_enable', 0)
-    autocmd VimEnter * ++once call hicolcode#auto_enable()
+    if v:vim_did_enter
+        call hicolcode#auto_enable()
+    else
+        autocmd VimEnter * ++once call hicolcode#auto_enable()
+    endif
 endif
 
