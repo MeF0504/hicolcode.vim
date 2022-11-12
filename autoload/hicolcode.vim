@@ -70,7 +70,7 @@ function! hicolcode#hicolcode() abort range
                     continue
                 endif
                 let [r, g, b] = rgb
-                if match(keys(w:hicolcode_match_id), match_ptrn) == -1
+                if !has_key(w:hicolcode_match_id, match_ptrn)
                     if s:is_dark(r, g, b)
                         let cfg = 255
                         let gfg = 'White'
@@ -111,18 +111,19 @@ function! hicolcode#clear() abort
     let w:hicolcode_match_id = {}
 endfunction
 
-function! <SID>hicolcode_auto() abort
+function! <SID>hicolcode_auto(ran) abort
     let pos = getpos('.')
-    %call hicolcode#hicolcode()
+    execute printf("%scall hicolcode#hicolcode()", a:ran)
     call setpos('.', pos)
 endfunction
 
 function! hicolcode#auto_enable() abort
-    call <SID>hicolcode_auto()
+    call <SID>hicolcode_auto('%')
     augroup HiColCode
         autocmd!
-        autocmd InsertLeave * call <SID>hicolcode_auto()
-        autocmd BufWinEnter * call <SID>hicolcode_auto()
+        autocmd InsertLeave * call <SID>hicolcode_auto("%")
+        autocmd BufWinEnter * call <SID>hicolcode_auto("%")
+        autocmd CursorMoved * call <SID>hicolcode_auto("")
     augroup END
 endfunction
 
