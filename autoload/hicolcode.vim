@@ -121,7 +121,6 @@ function! hicolcode#auto_enable() abort
     call <SID>hicolcode_auto('%')
     augroup HiColCode
         autocmd!
-        autocmd InsertLeave * call <SID>hicolcode_auto("%")
         autocmd BufWinEnter * call <SID>hicolcode_auto("%")
         autocmd CursorMoved * call <SID>hicolcode_auto("")
     augroup END
