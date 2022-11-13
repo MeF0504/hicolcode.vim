@@ -87,7 +87,7 @@ function! hicolcode#hicolcode() abort range
                         let s:match_cnt = 0
                     endif
                 endif
-                let st = idx+len(match_ptrn-1)
+                let st = matchend(line, config.ptrn, st)
             endwhile
         endfor
     endfor
