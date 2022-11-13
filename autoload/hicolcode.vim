@@ -12,7 +12,7 @@ function! s:ret_colcode(line, index)
     let pat = join(map(split(ptrn, '\zs'),
                 \ 'v:val==#toupper(v:val)?v:val:"[".v:val.toupper(v:val)."]"'), '')
 
-    return [[r, g, b], pat]
+    return [r, g, b, pat]
 endfunction
 
 function! s:cvt_fullcolor_256(r, g, b) abort
@@ -64,12 +64,12 @@ function! hicolcode#hicolcode() abort range
                 if idx == -1
                     break
                 endif
-                let [rgb, match_ptrn] = call(config.func, [line, idx])
-                if empty(rgb)
+                let res = call(config.func, [line, idx])
+                if empty(res)
                     let st += 1
                     continue
                 endif
-                let [r, g, b] = rgb
+                let [r, g, b, match_ptrn] = res
                 if !has_key(w:hicolcode_match_id, match_ptrn)
                     if s:is_dark(r, g, b)
                         let cfg = 255
