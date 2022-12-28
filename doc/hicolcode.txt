@@ -1,0 +1,124 @@
+*hicolcode.txt* Vim plugin that highlight color codes in lines.
+
+==============================================================================
+CONTENTS                                                    *hicolcode-contents*
+
+Introduction		|hicolcode-introduction|
+Commands		|hicolcode-commands|
+Functions		|hicolcode-functions|
+Options			|hicolcode-options|
+Custom-highlights	|hicolcode-custom-highlights|
+License			|hicolcode-license|
+
+==============================================================================
+INTRODUCTION                                            *hicolcode-introduction*
+
+Vim plugin that highlight color codes in lines.
+
+==============================================================================
+COMMANDS                                                    *hicolcode-commands*
+
+:[range]ColCode                                                       *:ColCode*
+
+Search for and highlight color codes for each line in [range].
+The color code this plugin highlight is >
+	#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]
+< e.g. `#7d8fa4`, `#a47996`, `#00af5d`.
+
+:ColCodeClear                                                    *:ColCodeClear*
+
+Clear all highlights set by this plugin.
+
+==============================================================================
+FUNCTIONS                                                  *hicolcode-functions*
+
+hicolcode#auto_enable()                                *hicolcode#auto_enable()*
+
+Enable to highlight color codes automatically. This may make the process
+heavy. In this case, please call |hicolcode#disable()| to disable the auto-mode.
+
+hicolcode#disable()                                        *hicolcode#disable()*
+
+Clear all highlights and disable the auto-mode.
+
+==============================================================================
+OPTIONS                                                      *hicolcode-options*
+
+g:hicolcode_auto_enable                                *g:hicolcode_auto_enable*
+	type: |number|
+	default: 0
+If set 1, color codes are highlighted automatically.(|hicolcode#auto_enable()|
+is called when starting vim.)
+
+g:hicolcode_config                                          *g:hicolcode_config*
+	type: |dict|
+	default: {}
+A configuration variable to custom the highlight. Please see
+|hicolcode-custom| for the details.
+
+==============================================================================
+CUSTOM-HIGHLIGHTS                                  *hicolcode-custom-highlights*
+
+Note: this text may be confusing. Please let me know by github issue or
+something if you can't understand.
+
+You can custom the highlight roles by setting |g:hicolcode_config|. The
+structure of this variable is
+`g:hicolcode_config[{ft}] = [{"ptrn":{pattern}, "func":{function}},...]`
+{ft} is a |filetypes| to specify the applied file type. The following settings
+are activated only in this file type. "_" means all file types.
+Each item in the dictionary is a list of dictionaries, and this dictionary
+contains the "ptrn" and "func" keys.
+"ptrn" is a pattern to be applied to strings. When a matched pattern is found
+in a line, the function of "func" is called.
+"func" is a function name to concretely set the highlight role of the string.
+	The arguments of this function are the matched line and the index of
+	  the first item where "ptrn" matches.
+	The returned value is a list containing four items; [{r}, {g}, {b},
+	  {matched_patttern}]. {r}, {g}, and {b} are number from 0 to 255.
+	  These specify the color of the string. {matched_patttern} define the
+	  highlight pattern. Note that the set of {r}, {g}, {b} should be
+	  identified by the {matched_patttern}.
+Following is a sample of highlighting the `cterm[fb]g={num}` sentence in vimrc; >
+	let g:hicolcode_config = get(g:, 'hicolcode_config', {})
+	function! s:vim_cterm_hi(line, idx) abort
+	    let num = str2nr(split(a:line[a:idx+8:])[0])
+	    let ptrn = 'cterm[fb]g=\zs'..num..'\ze\>'
+	    if num < 16
+	        let rgb = [
+	                    \ [0, 0, 0], [150, 0, 0], [0, 150, 0], [150, 150, 0],
+	                    \ [0, 0, 150], [0, 150, 150], [150, 0, 150], [200, 200, 200],
+	                    \ [150, 150, 150], [255, 0, 0], [0, 255, 0], [255, 255, 0],
+	                    \ [0, 0, 255], [0, 255, 255], [255, 0, 255], [255, 255, 255],
+	                    \ ]
+	        return rgb[num]+[ptrn]
+	    elseif num < 232
+	        let r = (num-16)/36
+	        let g = (num-16-r*36)/6
+	        let b = num-16-r*36-g*6
+	        let r = r == 0 ? 0 : 55+40*r
+	        let g = g == 0 ? 0 : 55+40*g
+	        let b = b == 0 ? 0 : 55+40*b
+	        return [r, g, b, ptrn]
+	    elseif num < 256
+	        let wb = 8+10*(num-232)
+	        return [wb, wb, wb, ptrn]
+	    else
+	        return []
+	    endif
+	endfunction
+	let g:hicolcode_config.vim = [
+	            \ {
+	                \ 'ptrn': 'cterm[fb]g=[0-9]\+',
+	                \ 'func': expand('<SID>')..'vim_cterm_hi',
+	                \ }
+	                \ ]
+<
+
+==============================================================================
+LICENSE                                                      *hicolcode-license*
+
+The MIT License (https://github.com/MeF0504/hicolcode.vim/blob/main/LICENSE)
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:
