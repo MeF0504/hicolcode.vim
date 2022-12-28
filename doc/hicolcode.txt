@@ -50,6 +50,12 @@ g:hicolcode_auto_enable                                *g:hicolcode_auto_enable*
 If set 1, color codes are highlighted automatically.(|hicolcode#auto_enable()|
 is called when starting vim.)
 
+g:hicolcode_max_idx                                        *g:hicolcode_max_idx*
+	type: |number|
+	default: 100
+The max number of highlight indexes. Bigger is better to avoid duplication,
+but maybe the processing becomes heavy.
+
 g:hicolcode_config                                          *g:hicolcode_config*
 	type: |dict|
 	default: {}

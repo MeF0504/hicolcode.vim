@@ -41,6 +41,7 @@ function! hicolcode#hicolcode() abort range
     if !exists('w:hicolcode_match_id')
         let w:hicolcode_match_id = {}
     endif
+    let max_idx = get(g:, 'hicolcode_max_idx', 100)
     let colcode_config = [
                 \ {
                     \ 'ptrn': '#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]',
@@ -83,7 +84,7 @@ function! hicolcode#hicolcode() abort range
                     let match_id = matchadd('ColCode'..s:match_cnt, match_ptrn, 15)
                     let w:hicolcode_match_id[match_ptrn] = match_id
                     let s:match_cnt += 1
-                    if s:match_cnt >= 100
+                    if s:match_cnt >= max_idx
                         let s:match_cnt = 0
                     endif
                 endif

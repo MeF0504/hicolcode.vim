@@ -46,6 +46,9 @@ or, if you want to highlight all lines in the current file, the following comman
 - `g:hicolcode_auto_enable` (number)  
     If set 1, color codes are highlighted automatically.  
     default: 0
+- `g:hicolcode_max_idx` (number)  
+    The max number of highlight indexes. Bigger is better to avoid duplication, but maybe the processing becomes heavy.  
+    default: 100
 
 ## License
 [MIT](https://github.com/MeF0504/hicolcode.vim/blob/main/LICENSE)
